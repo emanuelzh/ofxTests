@@ -1,0 +1,9 @@
+.vs
+!bin/data
+bin/*.dll
+bin/*.exe
+bin/*.ilk
+bin/*.exp
+bin/*.lib
+bin/*.pdb
+obj
