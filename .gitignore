@@ -7,3 +7,5 @@ bin/*.exp
 bin/*.lib
 bin/*.pdb
 obj
+*.vcxproj
+*.vcxproj.filters
