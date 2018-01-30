@@ -1,8 +1,7 @@
-# ofxTests
 openFrameworks experiments
 ======
 
-## Requirements
+### Requirements
 
 * [openFrameworks](http://openframeworks.cc/)
 * [ofxDatGui add-on](https://braitsch.github.io/ofxDatGui/)
