@@ -20,8 +20,8 @@ ofColor bgcolor;
 //circle properties
 float radius = 300;
 
-//grab frame?
-bool grab = false;
+//frames grabbed
+int artwork_counter = 0;
 
 //FBO
 ofFbo fbo;
@@ -45,7 +45,9 @@ void ofApp::setup(){
 	triangle_slider = gui->addSlider("T Alpha", 10, 128);
 	triangle_speed = gui->addSlider("T Speed", 5, 100);
 	gui->addBreak()->setHeight(10.0f);
-	gui->addLabel("Press S to grab the screen");
+	gui->addLabel("Press S to save jpeg");
+	gui->addLabel("Press G to save and clear");
+	gui->addLabel("Press C to clear");
 
 	r_slider->onSliderEvent(this, &ofApp::onRedChange);
 	g_slider->onSliderEvent(this, &ofApp::onGreenChange);
@@ -164,16 +166,43 @@ ofVec2f ofApp::getPointInCircle(float rad) {
 
 }
 
+void ofApp::saveArtwork()
+{
+	ofPixels pxs;
+	ofImage save;
+	fbo.readToPixels(pxs);
+	save.setFromPixels(pxs);
+	save.setImageType(OF_IMAGE_COLOR);
+
+	//save the artwork
+	string filename = "artwork_" + std::to_string(artwork_counter) + ".jpg";
+	save.save(filename, OF_IMAGE_QUALITY_BEST);
+	artwork_counter++;
+}
+
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+	
+	//save artwork
 	if (key == 's' || key == 'S') {
+		saveArtwork();
+	}
 
-		ofPixels pxs;
-		ofImage save;
-		fbo.readToPixels(pxs);
-		save.setFromPixels(pxs);
-		save.setImageType(OF_IMAGE_COLOR);
-		save.save("artwork.jpg", OF_IMAGE_QUALITY_BEST);
+	//save and clear
+	if (key == 'g' || key == 'G') {
+		saveArtwork();
+		fbo.begin();
+		ofClear(bgcolor);
+		ofBackground(bgcolor);
+		fbo.end();
+	}
+
+	//save and clear
+	if (key == 'c' || key == 'C') {
+		fbo.begin();
+		ofClear(bgcolor);
+		ofBackground(bgcolor);
+		fbo.end();
 	}
 }
 

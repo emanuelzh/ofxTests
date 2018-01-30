@@ -18,6 +18,7 @@ class ofApp : public ofBaseApp{
 		void random_triangle();
 		void random_triangle_circ();
 		ofVec2f getPointInCircle(float rad);
+		void saveArtwork();
 
 		void keyPressed(int key);
 		void keyReleased(int key);
