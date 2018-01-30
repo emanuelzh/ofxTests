@@ -17,6 +17,9 @@ ofxDatGuiSlider* triangle_speed;
 //bgcolor
 ofColor bgcolor;
 
+//circle properties
+float radius = 300;
+
 //--------------------------------------------------------------
 void ofApp::setup(){
 
@@ -44,7 +47,10 @@ void ofApp::setup(){
 	g_slider->onSliderEvent(this, &ofApp::onGreenChange);
 	b_slider->onSliderEvent(this, &ofApp::onBlueChange);
 
-	ofSetBackgroundAuto(false); //disable automatic background redraw
+
+	ofEnableAlphaBlending();	//always alpha blending
+	ofSetBackgroundAuto(false);	//disable automatic background redraw
+	ofSetCircleResolution(100);	//best circle resolution
 
 	random_background();
 	ofBackground(bgcolor);
@@ -60,8 +66,14 @@ void ofApp::draw(){
 	//samebg ?
 	//ofBackground(bgcolor);
 
+	//draw a circle
+	//ofSetColor(10, 10, 10, triangle_slider->getValue());
+	//ofNoFill();
+	//ofDrawCircle((ofGetWidth() / 2), (ofGetHeight() / 2), radius);
+
+
 	if (ofGetFrameNum() % (int)(101 - triangle_speed->getValue()) == 0) {
-		random_triangle();
+		random_triangle_circ();
 	}
 	
 }
@@ -113,11 +125,32 @@ void ofApp::random_triangle(){
 	ofVec2f b = ofVec2f(ofRandom(0, ofGetWidth()), ofRandom(0, ofGetHeight()));
 	ofVec2f c = ofVec2f(ofRandom(0, ofGetWidth()), ofRandom(0, ofGetHeight()));
 
-	ofEnableAlphaBlending();
 	ofSetColor(10, 10, 10, triangle_slider->getValue());
 	ofNoFill();
 	ofDrawTriangle(a,b,c);
-	ofDisableAlphaBlending();
+
+}
+
+void ofApp::random_triangle_circ() {
+
+	ofVec2f a = getPointInCircle(radius);
+	ofVec2f b = getPointInCircle(radius);
+	ofVec2f c = getPointInCircle(radius);
+
+	ofSetColor(10, 10, 10, triangle_slider->getValue());
+	ofNoFill();
+	ofDrawTriangle(a, b, c);
+
+}
+
+ofVec2f ofApp::getPointInCircle(float rad) {
+
+	float angle = ofRandom(1, 360);
+	rad = rad + ofRandom(-15, 15);
+	ofVec2f point = ofVec2f(cos(angle) * rad, sin(angle) * rad);
+	point.x = point.x + (ofGetWidth() / 2);
+	point.y = point.y + (ofGetHeight() / 2);
+	return point;
 
 }
 

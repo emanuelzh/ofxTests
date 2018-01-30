@@ -16,6 +16,8 @@ class ofApp : public ofBaseApp{
 		void onBlueChange(ofxDatGuiSliderEvent evt);
 		void random_background();
 		void random_triangle();
+		void random_triangle_circ();
+		ofVec2f getPointInCircle(float rad);
 
 		void keyPressed(int key);
 		void keyReleased(int key);
