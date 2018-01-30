@@ -9,3 +9,4 @@ bin/*.pdb
 obj
 *.vcxproj
 *.vcxproj.filters
+*.sln
