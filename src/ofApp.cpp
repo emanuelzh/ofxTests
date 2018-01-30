@@ -51,17 +51,17 @@ void ofApp::setup(){
 	g_slider->onSliderEvent(this, &ofApp::onGreenChange);
 	b_slider->onSliderEvent(this, &ofApp::onBlueChange);
 
-	//start the fbo
-	fbo.allocate(ofGetWidth(), ofGetHeight());
-
 	ofEnableAlphaBlending();	//always alpha blending
 	ofSetBackgroundAuto(false);	//disable automatic background redraw
 	ofSetCircleResolution(100);	//best circle resolution
 
+	//start the fbo
+	fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
+
 	//set a background
-	random_background();
+	ofBackground(255, 255, 255);
 	bgcolor = ofGetBackgroundColor();
-	
+	random_background();
 }
 
 //--------------------------------------------------------------
@@ -169,9 +169,11 @@ void ofApp::keyPressed(int key){
 	if (key == 's' || key == 'S') {
 
 		ofPixels pxs;
+		ofImage save;
 		fbo.readToPixels(pxs);
-		img.setFromPixels(pxs);
-		img.saveImage("art.jpg");
+		save.setFromPixels(pxs);
+		save.setImageType(OF_IMAGE_COLOR);
+		save.save("artwork.jpg", OF_IMAGE_QUALITY_BEST);
 	}
 }
 
@@ -214,7 +216,7 @@ void ofApp::mouseExited(int x, int y){
 void ofApp::windowResized(int w, int h){
 	//update the fbo
 	fbo.clear();
-	fbo.allocate(w, h);
+	fbo.allocate(w, h, GL_RGBA);
 }
 
 //--------------------------------------------------------------
