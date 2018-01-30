@@ -20,12 +20,14 @@ ofColor bgcolor;
 //circle properties
 float radius = 300;
 
+//grab frame?
+bool grab = false;
+
+//FBO
+ofFbo fbo;
+
 //--------------------------------------------------------------
 void ofApp::setup(){
-
-	//set a background
-	ofBackground(255, 255, 255);
-	bgcolor = ofGetBackgroundColor();
 
 	//mabye put the gui here
 	gui = new ofxDatGui(ofxDatGuiAnchor::TOP_RIGHT);
@@ -42,18 +44,24 @@ void ofApp::setup(){
 	gui->addBreak()->setHeight(10.0f);
 	triangle_slider = gui->addSlider("T Alpha", 10, 128);
 	triangle_speed = gui->addSlider("T Speed", 5, 100);
+	gui->addBreak()->setHeight(10.0f);
+	gui->addLabel("Press S to grab the screen");
 
 	r_slider->onSliderEvent(this, &ofApp::onRedChange);
 	g_slider->onSliderEvent(this, &ofApp::onGreenChange);
 	b_slider->onSliderEvent(this, &ofApp::onBlueChange);
 
+	//start the fbo
+	fbo.allocate(ofGetWidth(), ofGetHeight());
 
 	ofEnableAlphaBlending();	//always alpha blending
 	ofSetBackgroundAuto(false);	//disable automatic background redraw
 	ofSetCircleResolution(100);	//best circle resolution
 
+	//set a background
 	random_background();
-	ofBackground(bgcolor);
+	bgcolor = ofGetBackgroundColor();
+	
 }
 
 //--------------------------------------------------------------
@@ -63,44 +71,44 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-	//samebg ?
-	//ofBackground(bgcolor);
-
-	//draw a circle
-	//ofSetColor(10, 10, 10, triangle_slider->getValue());
-	//ofNoFill();
-	//ofDrawCircle((ofGetWidth() / 2), (ofGetHeight() / 2), radius);
-
 
 	if (ofGetFrameNum() % (int)(101 - triangle_speed->getValue()) == 0) {
+		fbo.begin();
 		random_triangle_circ();
+		fbo.end();
 	}
-	
+
+	fbo.draw(0, 0);
+
 }
 
 //------ GUI Events
 void ofApp::onChangeBackground(ofxDatGuiButtonEvent evt) {
-	
 	random_background();
-
 }
 
 void ofApp::onRedChange(ofxDatGuiSliderEvent evt) {
 	//update the colors
 	bgcolor.r = evt.value;
+	fbo.begin();
 	ofBackground(bgcolor);
+	fbo.end();
 }
 
 void ofApp::onGreenChange(ofxDatGuiSliderEvent evt) {
 	//update the colors
 	bgcolor.g = evt.value;
+	fbo.begin();
 	ofBackground(bgcolor);
+	fbo.end();
 }
 
 void ofApp::onBlueChange(ofxDatGuiSliderEvent evt) {
 	//update the colors
 	bgcolor.b = evt.value;
+	fbo.begin();
 	ofBackground(bgcolor);
+	fbo.end();
 }
 
 //--- Helpers
@@ -116,7 +124,9 @@ void ofApp::random_background()
 	g_slider->setValue(bgcolor.g);
 	b_slider->setValue(bgcolor.b);
 
+	fbo.begin();
 	ofBackground(bgcolor);
+	fbo.end();
 }
 
 void ofApp::random_triangle(){
@@ -156,7 +166,13 @@ ofVec2f ofApp::getPointInCircle(float rad) {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+	if (key == 's' || key == 'S') {
 
+		ofPixels pxs;
+		fbo.readToPixels(pxs);
+		img.setFromPixels(pxs);
+		img.saveImage("art.jpg");
+	}
 }
 
 //--------------------------------------------------------------
@@ -196,7 +212,9 @@ void ofApp::mouseExited(int x, int y){
 
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h){
-
+	//update the fbo
+	fbo.clear();
+	fbo.allocate(w, h);
 }
 
 //--------------------------------------------------------------
