@@ -1,5 +1,7 @@
 .vs
 !bin/data
+bin/data/*.jpg
+bin/data/*.png
 bin/*.dll
 bin/*.exe
 bin/*.ilk
